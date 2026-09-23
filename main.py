@@ -1,5 +1,8 @@
+import io
+
 import streamlit as st
 import pandas as pd
+import requests
 import plotly.express as px
 
 st.set_page_config(page_title="영화 데이터 그래프 도감 2 - 분포와 관계", layout="wide")
@@ -11,7 +14,12 @@ DATA_URL = "https://raw.githubusercontent.com/greatsong/modudata/main/data/kobis
 @st.cache_data
 def load_data():
     # 1년간 박스오피스 10위권에 든 영화 216편의 요약표를 불러옵니다
-    df = pd.read_csv(DATA_URL)
+    # GitHub raw 서버가 User-Agent 없는 요청을 종종 막기 때문에,
+    # pandas가 바로 URL을 읽게 하지 않고 requests로 먼저 내려받습니다.
+    headers = {"User-Agent": "Mozilla/5.0 (Streamlit App)"}
+    response = requests.get(DATA_URL, headers=headers, timeout=10)
+    response.raise_for_status()
+    df = pd.read_csv(io.StringIO(response.text))
     # 장르가 세로막대 기호(|)로 여러 개 적힌 영화는 첫 번째 장르만 씁니다
     df["장르"] = df["genre"].str.split("|").str[0]
     return df
