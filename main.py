@@ -162,3 +162,22 @@ fig7.update_traces(
 st.plotly_chart(fig7, width="stretch")
 
 st.text_input("이 그래프로 알 수 있는 것", key="note7")
+
+st.divider()
+
+# ── 그래프 8. 나만의 질문 — 10위권에 오래 머문 영화는 총 관객도 많은가 (산점도) ──
+st.header("8. 10위권에 오래 머문 영화는 총 관객도 많은가")
+fig8 = px.scatter(
+    df,
+    x="days_in_top10",
+    y="total_audi",
+    hover_name="movieNm",
+    title="10위권에 오래 머문 영화는 총 관객도 많은가",
+)
+fig8.update_layout(
+    xaxis_title="10위권에 머문 날수",
+    yaxis_title="총 관객 (명)",
+)
+st.plotly_chart(fig8, width="stretch")
+
+st.text_input("이 그래프로 알 수 있는 것", key="note8")
